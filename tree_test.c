@@ -3,7 +3,7 @@
 #include "tree.h"
 
 void run(int *vals, int size) {
-    struct tree *atree = create_tree();
+    tree atree = create_tree();
 
     for (int i = 0; i < size; i++) {
         add_value(atree, vals[i]);

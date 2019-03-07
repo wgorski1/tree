@@ -4,15 +4,17 @@
 #include "tree.h"
 
 // node type
-struct _node {
-    int value;
-    struct _node *left;
-    struct _node *right;
-    struct _node *parent;
-    unsigned char position;
-};
+struct _node;
 
 typedef struct _node *node;
+
+struct _node {
+    int value;
+    node left;
+    node right;
+    node parent;
+    unsigned char position;
+};
 
 const unsigned char POS_LEFT = 'l';
 const unsigned char POS_RIGHT = 'r';
@@ -20,14 +22,12 @@ const unsigned char POS_RIGHT = 'r';
 const size_t NODE_SIZE = sizeof(struct _node);
 
 // tree type
-struct tree {
+struct _tree {
     node head;
     unsigned long count;
 };
 
-typedef struct tree *treep;
-
-const size_t TREE_SIZE = sizeof(struct tree);
+const size_t TREE_SIZE = sizeof(struct _tree);
 
 // FUNC
 
@@ -53,7 +53,7 @@ static node create_node(int value, node parent, unsigned char position) {
  * 
  * topnode is a
  */
-static void rotate_straight_left(treep atree, node topnode) {
+static void rotate_straight_left(tree atree, node topnode) {
     node newtopnode = topnode->right;
     
     if (topnode->position == POS_LEFT) {
@@ -89,7 +89,7 @@ static void rotate_straight_left(treep atree, node topnode) {
  * 
  * topnode is a
  */
-static void rotate_straight_right(treep atree, node topnode) {
+static void rotate_straight_right(tree atree, node topnode) {
     node newtopnode = topnode->left;
     
     if (topnode->position == POS_LEFT) {
@@ -113,7 +113,7 @@ static void rotate_straight_right(treep atree, node topnode) {
     topnode->position = POS_RIGHT;
 }
 
-static void rebalance_tree(treep atree, node bad_node) {
+static void rebalance_tree(tree atree, node bad_node) {
     printf("Rebalancing\n");
     
     // direct parent must have only one child, since the tree was balanced before
@@ -129,15 +129,15 @@ static void rebalance_tree(treep atree, node bad_node) {
     }
 }
 
-extern treep create_tree() {
-    treep atree = malloc(TREE_SIZE);
+extern tree create_tree() {
+    tree atree = malloc(TREE_SIZE);
     atree->head = NULL;
     atree->count = 0;
     
     return atree;
 }
 
-extern void add_value(treep atree, int value) {
+extern void add_value(tree atree, int value) {
     node prev_node = NULL;
     node *cur_node = &atree->head;
     unsigned short level = 1;
@@ -178,7 +178,7 @@ static void print_node(node anode, const char *dir, short level) {
     }
 }
 
-extern void print_tree(treep atree) {
+extern void print_tree(tree atree) {
     print_node(atree->head, "c", 1);
     printf("Count %lu\n", atree->count);
 }

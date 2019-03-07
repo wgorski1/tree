@@ -1,12 +1,14 @@
 #ifndef __tree_h
 #define __tree_h
 
-struct tree;
+struct _tree;
 
-struct tree *create_tree();
+typedef struct _tree *tree;
 
-void add_value(struct tree *atree, int value);
+tree create_tree();
 
-void print_tree(struct tree *atree);
+void add_value(tree atree, int value);
+
+void print_tree(tree atree);
 
 #endif
