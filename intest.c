@@ -1,4 +1,5 @@
-//https://www.spoj.com/problems/PICAD/
+// https://www.codechef.com/problems/INTEST
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,10 +16,10 @@ int main(int argc, const char **argv) {
 
 	fscanf(input, "%u %u", &n, &k);
 
-	//const int buffer_size = 3000000;
+	//const int buffer_size = 3000000;   // over 2.5 MB
 	const int buffer_size = 10;
 
-	char *buffer = malloc(buffer_size);  // over 2.5 MiB
+	char *buffer = malloc(buffer_size);
 
 	size_t read, from_prev = 0, overread = 0;
 	unsigned result = 0;
@@ -41,7 +42,6 @@ int main(int argc, const char **argv) {
 			if (value % k == 0) {
 				result++;
 			}
-			// process
 		}
 
 		int x;
