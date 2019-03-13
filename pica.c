@@ -3,12 +3,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(void) {
+int main(int argc, const char **argv) {
 	unsigned int start, end;
 	unsigned int duration;
 	unsigned short people;
+	FILE *input;
 
-	FILE *input = fopen("data.txt", "r");
+	if (argc > 1) {
+		input = fopen(*(argv + 1), "r");
+	} else {
+		input = stdin;
+	}
 
 	fscanf(input, "%u %u", &start, &end);
 	duration = end - start + 1;
@@ -39,7 +44,9 @@ int main(void) {
 		} while (needle++ != last);
 	}
 
-	fclose(input);
+	if (input != stdin) {
+		fclose(input);
+	}
 	
 	unsigned short min = people;
 	unsigned short max = 0;
@@ -51,10 +58,9 @@ int main(void) {
 		max = *ptr > max ? *ptr : max;
 	} while (ptr++ < timepoints + duration - 1);
 	
+	printf("%hu %hu\n", min, max);
 
 	free(timepoints);
-
-	printf("%hu %hu\n", min, max);
 
 	return 0;
 }
