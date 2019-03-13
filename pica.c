@@ -32,7 +32,7 @@ int main(void) {
 		//visit = left - entered + 1;
 
 		unsigned short *needle = timepoints + ((entered < start) ? 0 : entered - start);
-		unsigned short *last = ((left >= end) ? timepoints + duration - 1 : needle + (left - (start > entered ? entered : start)));
+		unsigned short *last = timepoints + ((left >= end) ? duration - 1 : left - start);
 
 		do {
 			(*needle)++;
@@ -55,4 +55,6 @@ int main(void) {
 	free(timepoints);
 
 	printf("%hu %hu\n", min, max);
+
+	return 0;
 }
