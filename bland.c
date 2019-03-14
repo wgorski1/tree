@@ -3,51 +3,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct coin;
+unsigned **cache;
 
-typedef struct coin *coin;
-
-struct coin {
-	unsigned val;
-	unsigned dollars;
-	coin half;
-	coin third;
-	coin quarter;
-};
-
-coin create_coin(unsigned val) {
-	coin acoin = malloc(sizeof(struct coin));
-        acoin->val = val;
-        acoin->dollars = 0;
-        acoin->half = acoin->third = acoin->quarter = NULL;
-
-	return acoin;
-}
-
-void process_coin(coin acoin) {
-	if (acoin->val < 12) {
-		acoin->dollars = acoin->val;
-		return;
-	} else if (acoin->val == 12) {
-		acoin->dollars = 13;
-		return;
+unsigned process_value(unsigned value, unsigned twos_level, unsigned threes_level) {
+	if (value < 12) {
+		return value;
+	} else if (value == 12) {
+		return 13;
 	}
+    
+    unsigned *cached = *(cache + twos_level) + threes_level;
+    
+    if (*cached != 0) {
+        return *cached;
+    }
 	
-	acoin->half = create_coin(acoin->val / 2);
-	acoin->third = create_coin(acoin->val / 3);
-	acoin->quarter = create_coin(acoin->val / 4);
+	
+	unsigned from_half = process_value(value / 2, twos_level + 1, threes_level);
+	unsigned from_third = process_value(value / 3, twos_level, threes_level + 1);
+	unsigned from_quarter = process_value(value / 4, twos_level + 2, threes_level);
 
-	process_coin(acoin->half);
-	process_coin(acoin->third);
-	process_coin(acoin->quarter);
-
-	unsigned sub = acoin->half->dollars + acoin->third->dollars + acoin->quarter->dollars;
-
-	if (sub > acoin->val) {
-		acoin->dollars = sub;
-	} else {
-		acoin->dollars = acoin->val;
-	}
+	unsigned subtotal = from_half + from_third + from_quarter;
+    
+    unsigned result = (subtotal > value) ? subtotal : value;
+    
+    *cached = result;
+    
+    return result;
 }
 
 int main(int argc, const char **argv) {
@@ -61,16 +43,21 @@ int main(int argc, const char **argv) {
 	}
 
 	fscanf(input, "%u", &n);
+    
+    cache = calloc(29, sizeof(unsigned*));
+    int i;
+    
+    for (i = 0; i < 29; i++) {
+        *(cache + i) = calloc(19, sizeof(unsigned));
+    }
 
-	coin root_coin = create_coin(n);
-
-	process_coin(root_coin);
+	unsigned result = process_value(n, 0, 0);
 
 	if (input != stdin) {
 		fclose(input);
 	}
 
-	printf("%u\n", root_coin->dollars);
+	printf("%u\n", result);
 	
 	return 0;
 }
